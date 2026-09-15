@@ -1,16 +1,16 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Clonosaurio</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Clonosaurio</title>
 
-<style>
-    * {
+    <style>
+      * {
         box-sizing: border-box;
-    }
+      }
 
-    body {
+      body {
         margin: 0;
         background: #f7f7f7;
         font-family: Arial, sans-serif;
@@ -18,17 +18,17 @@
         justify-content: center;
         align-items: center;
         min-height: 100vh;
-    }
+      }
 
-    #contenedor {
+      #contenedor {
         text-align: center;
-    }
+      }
 
-    h1 {
+      h1 {
         margin-bottom: 10px;
-    }
+      }
 
-    #juego {
+      #juego {
         position: relative;
         width: 800px;
         height: 300px;
@@ -36,18 +36,18 @@
         border: 3px solid #333;
         background: white;
         overflow: hidden;
-    }
+      }
 
-    #suelo {
+      #suelo {
         position: absolute;
         bottom: 40px;
         left: 0;
         width: 100%;
         height: 3px;
         background: #333;
-    }
+      }
 
-    #dino {
+      #dino {
         position: absolute;
         left: 80px;
         bottom: 43px;
@@ -55,10 +55,10 @@
         height: 55px;
         background: #333;
         border-radius: 8px 8px 3px 3px;
-    }
+      }
 
-    /* Ojo */
-    #dino::before {
+      /* Ojo */
+      #dino::before {
         content: "";
         position: absolute;
         width: 7px;
@@ -67,10 +67,10 @@
         right: 7px;
         top: 10px;
         border-radius: 50%;
-    }
+      }
 
-    /* Piernas */
-    #dino::after {
+      /* Piernas */
+      #dino::after {
         content: "";
         position: absolute;
         width: 12px;
@@ -79,9 +79,9 @@
         bottom: -13px;
         left: 7px;
         box-shadow: 20px 0 #333;
-    }
+      }
 
-    #cactus {
+      #cactus {
         position: absolute;
         right: -40px;
         bottom: 43px;
@@ -89,313 +89,267 @@
         height: 55px;
         background: #248b35;
         border-radius: 5px;
-    }
+      }
 
-    #cactus::before,
-    #cactus::after {
+      #cactus::before,
+      #cactus::after {
         content: "";
         position: absolute;
         background: #248b35;
         width: 14px;
         height: 28px;
         border-radius: 5px;
-    }
+      }
 
-    #cactus::before {
+      #cactus::before {
         left: -10px;
         top: 20px;
-    }
+      }
 
-    #cactus::after {
+      #cactus::after {
         right: -10px;
         top: 10px;
-    }
+      }
 
-    #puntos {
+      #puntos {
         position: absolute;
         top: 15px;
         right: 20px;
         font-size: 20px;
         font-weight: bold;
-    }
+      }
 
-    #mensaje {
+      #mensaje {
         position: absolute;
         width: 100%;
         top: 105px;
         text-align: center;
         font-size: 24px;
         font-weight: bold;
-    }
+      }
 
-    #instrucciones {
+      #instrucciones {
         margin-top: 15px;
         color: #555;
-    }
+      }
 
-    button {
+      button {
         margin-top: 10px;
         padding: 10px 25px;
         font-size: 16px;
         cursor: pointer;
-    }
+      }
 
-    @media (max-width: 600px) {
+      @media (max-width: 600px) {
         #juego {
-            height: 250px;
+          height: 250px;
         }
-    }
-</style>
-</head>
+      }
+    </style>
+  </head>
 
-<body>
+  <body>
+    <div id="contenedor">
+      <h1>🦖 Clonosaurio</h1>
 
-<div id="contenedor">
-
-    <h1>🦖 Clonosaurio</h1>
-
-    <div id="juego">
-
+      <div id="juego">
         <div id="puntos">00000</div>
 
-        <div id="mensaje">
-            Presiona ESPACIO para comenzar
-        </div>
+        <div id="mensaje">Presiona ESPACIO para comenzar</div>
 
         <div id="dino"></div>
 
         <div id="cactus"></div>
 
         <div id="suelo"></div>
+      </div>
 
+      <div id="instrucciones">ESPACIO = Saltar</div>
+
+      <button onclick="reiniciar()">Reiniciar</button>
     </div>
 
-    <div id="instrucciones">
-        ESPACIO = Saltar
-    </div>
+    <script>
+      const dino = document.getElementById("dino");
+      const cactus = document.getElementById("cactus");
+      const puntosTexto = document.getElementById("puntos");
+      const mensaje = document.getElementById("mensaje");
 
-    <button onclick="reiniciar()">Reiniciar</button>
+      let jugando = false;
+      let saltando = false;
+      let gameOver = false;
 
-</div>
+      let dinoY = 0;
+      let velocidadY = 0;
 
-<script>
+      let cactusX = 800;
 
-const dino = document.getElementById("dino");
-const cactus = document.getElementById("cactus");
-const puntosTexto = document.getElementById("puntos");
-const mensaje = document.getElementById("mensaje");
+      let puntos = 0;
+      let velocidad = 6;
 
-let jugando = false;
-let saltando = false;
-let gameOver = false;
+      let ultimoTiempo = 0;
 
-let dinoY = 0;
-let velocidadY = 0;
-
-let cactusX = 800;
-
-let puntos = 0;
-let velocidad = 6;
-
-let ultimoTiempo = 0;
-
-
-/* =========================
+      /* =========================
    SALTO
 ========================= */
 
-function saltar() {
+      function saltar() {
+        if (!jugando) {
+          comenzar();
+        }
 
-    if (!jugando) {
-        comenzar();
-    }
+        if (saltando || gameOver) return;
 
-    if (saltando || gameOver)
-        return;
+        saltando = true;
+        velocidadY = 13;
+      }
 
-    saltando = true;
-    velocidadY = 13;
-}
-
-
-/* =========================
+      /* =========================
    COMENZAR
 ========================= */
 
-function comenzar() {
+      function comenzar() {
+        if (gameOver) return;
 
-    if (gameOver)
-        return;
+        jugando = true;
+        mensaje.style.display = "none";
 
-    jugando = true;
-    mensaje.style.display = "none";
+        ultimoTiempo = performance.now();
 
-    ultimoTiempo = performance.now();
+        requestAnimationFrame(bucle);
+      }
 
-    requestAnimationFrame(bucle);
-}
-
-
-/* =========================
+      /* =========================
    BUCLE PRINCIPAL
 ========================= */
 
-function bucle(tiempo) {
+      function bucle(tiempo) {
+        if (!jugando) return;
 
-    if (!jugando)
-        return;
+        let dt = (tiempo - ultimoTiempo) / 16.67;
+        ultimoTiempo = tiempo;
 
-    let dt = (tiempo - ultimoTiempo) / 16.67;
-    ultimoTiempo = tiempo;
+        if (dt > 2) dt = 2;
 
-    if (dt > 2)
-        dt = 2;
+        /* ----- FÍSICA DEL DINOSAURIO ----- */
 
+        if (saltando) {
+          dinoY += velocidadY * dt;
 
-    /* ----- FÍSICA DEL DINOSAURIO ----- */
+          velocidadY -= 0.7 * dt;
 
-    if (saltando) {
-
-        dinoY += velocidadY * dt;
-
-        velocidadY -= 0.7 * dt;
-
-        if (dinoY <= 0) {
-
+          if (dinoY <= 0) {
             dinoY = 0;
             velocidadY = 0;
             saltando = false;
-
+          }
         }
-    }
 
-    dino.style.transform =
-        `translateY(${-dinoY}px)`;
+        dino.style.transform = `translateY(${-dinoY}px)`;
 
+        /* ----- CACTUS ----- */
 
-    /* ----- CACTUS ----- */
+        cactusX -= velocidad * dt;
 
-    cactusX -= velocidad * dt;
+        if (cactusX < -50) {
+          cactusX = 800 + Math.random() * 300;
 
-    if (cactusX < -50) {
+          puntos++;
 
-        cactusX = 800 + Math.random() * 300;
+          puntosTexto.textContent = String(puntos).padStart(5, "0");
 
-        puntos++;
+          /* Aumentar dificultad */
 
-        puntosTexto.textContent =
-            String(puntos).padStart(5, "0");
-
-
-        /* Aumentar dificultad */
-
-        if (puntos % 5 === 0) {
+          if (puntos % 5 === 0) {
             velocidad += 0.7;
+          }
         }
-    }
 
-    cactus.style.left = cactusX + "px";
+        cactus.style.left = cactusX + "px";
 
+        /* ----- COLISIÓN ----- */
 
-    /* ----- COLISIÓN ----- */
+        const dinoRect = dino.getBoundingClientRect();
+        const cactusRect = cactus.getBoundingClientRect();
 
-    const dinoRect = dino.getBoundingClientRect();
-    const cactusRect = cactus.getBoundingClientRect();
+        const margen = 8;
 
-    const margen = 8;
+        const colision =
+          dinoRect.right - margen > cactusRect.left &&
+          dinoRect.left + margen < cactusRect.right &&
+          dinoRect.bottom - margen > cactusRect.top &&
+          dinoRect.top + margen < cactusRect.bottom;
 
-    const colision =
-        dinoRect.right - margen > cactusRect.left &&
-        dinoRect.left + margen < cactusRect.right &&
-        dinoRect.bottom - margen > cactusRect.top &&
-        dinoRect.top + margen < cactusRect.bottom;
+        if (colision) {
+          terminar();
+          return;
+        }
 
+        requestAnimationFrame(bucle);
+      }
 
-    if (colision) {
-
-        terminar();
-        return;
-    }
-
-
-    requestAnimationFrame(bucle);
-}
-
-
-/* =========================
+      /* =========================
    GAME OVER
 ========================= */
 
-function terminar() {
+      function terminar() {
+        jugando = false;
+        gameOver = true;
 
-    jugando = false;
-    gameOver = true;
+        mensaje.style.display = "block";
 
-    mensaje.style.display = "block";
+        mensaje.innerHTML =
+          "💥 GAME OVER<br>" +
+          "<small>Presiona ESPACIO para volver a jugar</small>";
+      }
 
-    mensaje.innerHTML =
-        "💥 GAME OVER<br>" +
-        "<small>Presiona ESPACIO para volver a jugar</small>";
-}
-
-
-/* =========================
+      /* =========================
    REINICIAR
 ========================= */
 
-function reiniciar() {
+      function reiniciar() {
+        jugando = false;
+        saltando = false;
+        gameOver = false;
 
-    jugando = false;
-    saltando = false;
-    gameOver = false;
+        dinoY = 0;
+        velocidadY = 0;
 
-    dinoY = 0;
-    velocidadY = 0;
+        cactusX = 800;
 
-    cactusX = 800;
+        puntos = 0;
+        velocidad = 6;
 
-    puntos = 0;
-    velocidad = 6;
+        puntosTexto.textContent = "00000";
 
-    puntosTexto.textContent = "00000";
+        cactus.style.left = cactusX + "px";
 
-    cactus.style.left = cactusX + "px";
+        dino.style.transform = "translateY(0)";
 
-    dino.style.transform = "translateY(0)";
+        mensaje.style.display = "block";
+        mensaje.innerHTML = "Presiona ESPACIO para comenzar";
+      }
 
-    mensaje.style.display = "block";
-    mensaje.innerHTML =
-        "Presiona ESPACIO para comenzar";
-}
-
-
-/* =========================
+      /* =========================
    TECLADO
 ========================= */
 
-document.addEventListener("keydown", function(e) {
+      document.addEventListener("keydown", function (e) {
+        if (e.code === "Space") {
+          e.preventDefault();
 
-    if (e.code === "Space") {
-
-        e.preventDefault();
-
-        if (gameOver) {
+          if (gameOver) {
             reiniciar();
             saltar();
-        }
-        else {
+          } else {
             saltar();
+          }
         }
-    }
-});
+      });
 
+      /* También permitir clic */
 
-/* También permitir clic */
-
-document.getElementById("juego")
-    .addEventListener("click", saltar);
-
-</script>
-
-</body>
+      document.getElementById("juego").addEventListener("click", saltar);
+    </script>
+  </body>
 </html>
